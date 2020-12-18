@@ -1,8 +1,7 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput, Image, KeyboardAvoidingView } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import db from '../config.js';
 
 export default class BookTransactionScreen extends React.Component {
     constructor() {
@@ -25,9 +24,9 @@ export default class BookTransactionScreen extends React.Component {
         })
     }
     handleTransaction = () => {
-        var transactionMessege = db.collection("books").doc(this.state.scannedbookID).get().then((doc) => {
-            console.log(doc.data)
-        })
+        // var transactionMessege = db.collection("books").doc(this.state.scannedbookID).get().then((doc) => {
+        //     console.log(doc.data)
+        // })
     }
     render() {
         const hasCameraPermissions = this.state.hasCameraPermissions;
@@ -46,13 +45,14 @@ export default class BookTransactionScreen extends React.Component {
         } 
         else if(buttonState === 'normal') {
             return(
-                <View style = {styles.container}>
+                <KeyboardAvoidingView style = {styles.container} behavior = "padding" enabled>
                     <View>
                         <Image source = {require("../assets/booklogo.jpg")} style = {{width : 200, height : 200}}/>
                         <Text style = {{textAlign : 'center', fontSize : 30}}>Wily</Text>
                     </View>
                     <View style = {styles.inputView}>
-                        <TextInput style = {styles.inputBox} placeholder = "bookid" value = {this.state.scannedbookID}/>
+                        <TextInput style = {styles.inputBox} placeholder = "bookid"
+                        onChangeText = {text => this.setState({scannedbookID : text})} value = {this.state.scannedbookID}/>
                         <TouchableOpacity style = {styles.scanButton} onPress = {() => {
                             this.getCameraPermissions("bookid")
                         }}>
@@ -60,7 +60,8 @@ export default class BookTransactionScreen extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <View style = {styles.inputView}>
-                        <TextInput style = {styles.inputBox} placeholder = "studentid" value = {this.state.scannedstudentID}/>
+                        <TextInput style = {styles.inputBox} placeholder = "studentid"
+                        onChangeText = {text => this.setState({scannedstudentID : text})} value = {this.state.scannedstudentID}/>
                         <TouchableOpacity style = {styles.scanButton} onPress = {() => {
                             this.getCameraPermissions("studentid")
                         }}>
@@ -70,7 +71,7 @@ export default class BookTransactionScreen extends React.Component {
                     <TouchableOpacity style = {styles.submitButton} onPress = {this.handleTransaction}>
                         <Text style = {styles.submitButtonText}>Submit</Text>
                     </TouchableOpacity>
-                </View>
+                </KeyboardAvoidingView>
             )
         }
         
